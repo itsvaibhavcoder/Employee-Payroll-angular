@@ -1,0 +1,91 @@
+<body>
+  <header class="header-content header" id="headerID">
+    <div class="logo-content">
+      <img src="../../assets/logo.png" alt="" />
+      <div>
+        <span class="emp-text">EMPLOYEE</span>
+        <br />
+        <span class="emp-text emp-payroll">PAYROLL</span>
+      </div>
+    </div>
+</header>
+
+  <div class="main-content">
+    <div class="header-content">
+      <div class="emp-detail-text">
+        Employee Details
+        <div class="emp-count">({{ (employees$ | async)?.length }})</div>
+      </div>
+
+      <div class="searchBar">
+        <input
+          id="search-input"
+          class="search"
+          type="text"
+          placeholder="Search user"
+          [(ngModel)]="searchText"
+        />
+        <img
+          id="search-button"
+          class="searchIcon"
+          src="../assets/icons8-search-50.png"
+          alt=""
+        />
+      </div>
+
+      <div class="searchAddUser-cnt">
+        <a routerLink="/register" class="add-button">
+          <img src="../assets/icons8-add-24.png" alt="" /> Add User
+        </a>
+      </div>
+    </div>
+    <table id="display" class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Department</th>
+          <th>Salary</th>
+          <th>Start Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="employees$ | async as employees; else noEmployees">
+          <ng-container *ngIf="employees.length > 0; else noEmployees">
+            <tr *ngFor="let employee of employees | filter : searchText">
+              <td>{{ employee.name }}</td>
+              <td>{{ employee.gender }}</td>
+              <td
+                *ngIf="
+                  employee.department && employee.department.length > 0;
+                  else noDepartment
+                "
+              >
+                {{ employee.department.join(", ") }}
+              </td>
+              <td>{{ employee.salary }}</td>
+              <td>
+                {{ employee.startDate.day }}/{{ employee.startDate.month }}/{{
+                  employee.startDate.year
+                }}
+              </td>
+              <td>
+                <button (click)="onDelete(employee.id)">Delete</button>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noEmployees>
+          <tr>
+            <td colspan="6">No employees found</td>
+          </tr>
+        </ng-template>
+        <ng-template #noDepartment>
+          <td>NA</td>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+</body>
+
